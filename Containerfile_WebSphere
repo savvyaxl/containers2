@@ -1,0 +1,22 @@
+FROM registry.access.redhat.com/ubi9/ubi
+RUN mkdir /tmp/websphere \
+&& mkdir /tmp/websphere/agent \
+&& mkdir /tmp/websphere/response \
+&& echo "alias ll='ls -la'" >> /root/.bashrc
+
+COPY agent.installer.linux.gtk.x86_64_1.9.2008.20240227_0018.zip /tmp/websphere/agent
+COPY install_response_file.xml /tmp/websphere/response
+COPY response.websphere.NotManaged /tmp/websphere/response
+COPY start_was.sh /root/
+RUN dnf install -y unzip \
+&& cd /tmp; unzip /tmp/websphere/agent/agent.installer.linux.gtk.x86_64_1.9.2008.20240227_0018.zip 2>&1 >/dev/null \
+&& ./installc -acceptLicense
+RUN /opt/IBM/InstallationManager/eclipse/tools/imcl -acceptLicense \
+   input /tmp/websphere/response/install_response_file.xml \
+  -log /root/install_log$(date +%s).xml -showProgress \
+  -preferences com.ibm.cic.common.core.preferences.ssl.nonsecureMode=true
+RUN /opt/IBM/WebSphere/AppServer/bin/manageprofiles.sh \
+  -response /tmp/websphere/response/response.websphere.NotManaged
+
+CMD ["/usr/bin/sh", "/root/start_was.sh"]
+

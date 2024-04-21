@@ -1,0 +1,11 @@
+create
+profileName=wasnode
+profilePath=/opt/IBM/WebSphere/AppServer/profiles/wasnode
+templatePath=/opt/IBM/WebSphere/AppServer/profileTemplates/default
+nodeName=websphere
+cellName=wascell
+hostName=websphere
+personalCertValidityPeriod=15
+signingCertValidityPeriod=25
+defaultPorts
+
