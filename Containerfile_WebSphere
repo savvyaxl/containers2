@@ -1,34 +1,30 @@
-FROM registry.access.redhat.com/ubi9/ubi
-RUN mkdir /tmp/websphere \
-&& mkdir /tmp/websphere/agent \
-&& mkdir /tmp/websphere/response \
-&& echo "alias ll='ls -la'" >> /root/.bashrc
+FROM base_icml:1.1.0002
 
-COPY agent.installer.linux.gtk.x86_64_1.9.2008.20240227_0018.zip /tmp/websphere/agent
-COPY install_response_file.xml /tmp/websphere/response
+COPY install_WebSphere.xml /tmp/websphere/response
 COPY response.websphere.NotManaged /tmp/websphere/response
-COPY start_was.sh /root/
-RUN dnf install -y unzip \
-&& cd /tmp; unzip /tmp/websphere/agent/agent.installer.linux.gtk.x86_64_1.9.2008.20240227_0018.zip 2>&1 >/dev/null \
-&& ./installc -acceptLicense
+COPY start_was.sh /root/start.sh
+
 RUN /opt/IBM/InstallationManager/eclipse/tools/imcl -acceptLicense \
-   input /tmp/websphere/response/install_response_file.xml \
+   input /tmp/websphere/response/install_WebSphere.xml \
   -log /root/install_log$(date +%s).xml -showProgress \
   -preferences com.ibm.cic.common.core.preferences.ssl.nonsecureMode=true
 RUN /opt/IBM/WebSphere/AppServer/bin/manageprofiles.sh \
   -response /tmp/websphere/response/response.websphere.NotManaged
 
-CMD ["/usr/bin/sh", "/root/start_was.sh"]
+RUN groupadd -g 18002 wasgrp \
+&& useradd -u 18001 -g wasgrp wasadmin
+
+CMD ["/usr/bin/sh", "/root/start.sh"]
 
 
-# podman build -f Containerfile_WebSphere -t websphere:1.1.0007 .
-
-
-# podman volume create -o device=/mnt/storage/wasrepo -o o="bind" wasrepo_vol
-# podman run -d --rm -v wasrepo_vol:/var/local:Z --name wasrepo localhost/webrepo:1.1
+# podman build -f Containerfile_WebSphere -t websphere:1.1.0008 .
 
 
 # sudo mkdir -p /srv/was/logs && mkdir -p /srv/was/apps && mkdir -p /srv/was/profile && sudo chown -R alex:alex /srv/was
 # podman volume create -o device=/srv/ihs/logs -o=o=bind ihs_logs_vol
+
+
+# podman run -d --rm -v wasrepo_vol:/var/local:Z -p 9043:9043 -p 9060:9060 -p 9080:9080 -p 9443:9443 --name websphere localhost/websphere:1.1.0008
+
 
 
