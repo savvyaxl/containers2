@@ -1,0 +1,18 @@
+FROM registry.access.redhat.com/ubi9/ubi
+RUN mkdir /tmp/websphere \
+&& mkdir /tmp/websphere/agent \
+&& mkdir /tmp/websphere/response \
+&& echo "alias ll='ls -la'" >> /root/.bashrc
+
+COPY agent.installer.linux.gtk.x86_64_1.9.2008.20240227_0018.zip /tmp/websphere/agent
+COPY start.sh /root/
+RUN dnf install -y unzip libxcrypt-compat \
+&& cd /tmp; unzip /tmp/websphere/agent/agent.installer.linux.gtk.x86_64_1.9.2008.20240227_0018.zip 2>&1 >/dev/null \
+&& ./installc -acceptLicense
+
+CMD ["/usr/bin/sh", "/root/start.sh"]
+
+# podman build -f Containerfile_IMCL -t base_icml:1.1.0002 .
+# podman push base_icml:1.0 savvyaxl.com.br:5000/base_icml:1.1.0001
+# podman exec -it httpserver bash
+# podman stop httpserver

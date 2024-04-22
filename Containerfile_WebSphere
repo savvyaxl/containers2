@@ -20,3 +20,15 @@ RUN /opt/IBM/WebSphere/AppServer/bin/manageprofiles.sh \
 
 CMD ["/usr/bin/sh", "/root/start_was.sh"]
 
+
+# podman build -f Containerfile_WebSphere -t websphere:1.1.0007 .
+
+
+# podman volume create -o device=/mnt/storage/wasrepo -o o="bind" wasrepo_vol
+# podman run -d --rm -v wasrepo_vol:/var/local:Z --name wasrepo localhost/webrepo:1.1
+
+
+# sudo mkdir -p /srv/was/logs && mkdir -p /srv/was/apps && mkdir -p /srv/was/profile && sudo chown -R alex:alex /srv/was
+# podman volume create -o device=/srv/ihs/logs -o=o=bind ihs_logs_vol
+
+

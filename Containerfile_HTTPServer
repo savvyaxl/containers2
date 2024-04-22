@@ -1,0 +1,35 @@
+FROM base_icml:1.1.0002
+
+EXPOSE 80 443
+
+COPY install_HTTPServer.xml /tmp/websphere/response
+
+COPY start_ihs.sh /root/start.sh
+
+RUN /opt/IBM/InstallationManager/eclipse/tools/imcl -acceptLicense \
+   input /tmp/websphere/response/install_HTTPServer.xml \
+  -log /root/install_log$(date +%s).xml -showProgress \
+  -preferences com.ibm.cic.common.core.preferences.ssl.nonsecureMode=true
+
+RUN groupadd -g 18001 ihsgrp \
+&& useradd -u 18001 -g ihsgrp ihsusr
+
+COPY httpd.conf /opt/IBM/HTTPServer/conf
+
+CMD ["/usr/bin/sh", "/root/start.sh"]
+
+
+# podman build -f Containerfile_HTTPServer -t httpserver:1.1.0007 .
+
+
+# sudo mkdir -p /srv/ihs/logs && mkdir -p /srv/ihs/certs && mkdir -p /srv/ihs/conf && sudo chown -R alex:alex /srv/ihs
+# podman volume create -o device=/srv/ihs/logs -o=o=bind ihs_logs_vol
+# podman volume create -o device=/srv/ihs/certs -o=o=bind ihs_certs_vol
+# podman volume create -o device=/srv/ihs/conf -o=o=bind ihs_conf_vol
+
+
+# podman run -d --rm -v ihs_logs_vol:/opt/IBM/HTTPServer/logs:Z -v ihs_certs_vol:/opt/IBM/HTTPServer/certs:Z -v ihs_conf_vol:/opt/IBM/HTTPServer/conf:Z --name httpserver --hostname httpserver --net=host httpserver:1.1.0007
+
+
+# podman run -d --rm -v wasrepo_vol:/var/local:Z --name httpserver savvyaxl.com.br:5000/httpserver:1.1.0001
+
