@@ -1,30 +1,36 @@
 FROM base_icml:1.1.0002
 
-COPY install_WebSphere.xml /tmp/websphere/response
-COPY response.websphere.NotManaged /tmp/websphere/response
+COPY install_WebSphere.xml response.websphere.NotManaged /tmp/websphere/response
 COPY start_was.sh /root/start.sh
 
 RUN /opt/IBM/InstallationManager/eclipse/tools/imcl -acceptLicense \
    input /tmp/websphere/response/install_WebSphere.xml \
   -log /root/install_log$(date +%s).xml -showProgress \
-  -preferences com.ibm.cic.common.core.preferences.ssl.nonsecureMode=true
-RUN /opt/IBM/WebSphere/AppServer/bin/manageprofiles.sh \
-  -response /tmp/websphere/response/response.websphere.NotManaged
-
-RUN groupadd -g 18002 wasgrp \
-&& useradd -u 18001 -g wasgrp wasadmin
+  -preferences com.ibm.cic.common.core.preferences.ssl.nonsecureMode=true \
+&& /opt/IBM/WebSphere/AppServer/bin/manageprofiles.sh \
+  -response /tmp/websphere/response/response.websphere.NotManaged \
+&& mkdir -p /mnt/ears \
+&& mkdir - p /mnt/apl \
+&& ln -s /mnt/ears /opt/IBM/WebSphere/AppServer/
 
 CMD ["/usr/bin/sh", "/root/start.sh"]
 
 
-# podman build -f Containerfile_WebSphere -t websphere:1.1.0008 .
+# podman build -f Containerfile_WebSphere -t websphere:1.1.0011 .
 
 
-# sudo mkdir -p /srv/was/logs && mkdir -p /srv/was/apps && mkdir -p /srv/was/profile && sudo chown -R alex:alex /srv/was
-# podman volume create -o device=/srv/ihs/logs -o=o=bind ihs_logs_vol
+# sudo mkdir -p /srv/was/ears && sudo mkdir -p /srv/was/apl && sudo mkdir -p /srv/was/profiles && sudo mkdir -p /srv/was/properties && sudo chown -R alex:alex /srv/was
+# podman volume create -o device=/srv/was/ears -o=o=bind was_ears_vol
+# podman volume create -o device=/srv/was/apl -o=o=bind was_apl_vol
+# podman volume create -o device=/srv/was/profiles -o=o=bind was_profiles_vol
+# podman volume create -o device=/srv/was/properties -o=o=bind was_properties_vol
+#/opt/IBM/WebSphere/AppServer/properties
+#/opt/IBM/WebSphere/AppServer/profiles
 
 
-# podman run -d --rm -v wasrepo_vol:/var/local:Z -p 9043:9043 -p 9060:9060 -p 9080:9080 -p 9443:9443 --name websphere localhost/websphere:1.1.0008
+# podman run -d --rm -v was_ears_vol:/mnt/ears:Z -v was_apl_vol:/mnt/apl:Z -v was_profiles_vol:/opt/IBM/WebSphere/AppServer/properties:Z -v was_properties_vol:/opt/IBM/WebSphere/AppServer/profiles:Z -p 9043:9043 -p 9060:9060 -p 9080:9080 -p 9443:9443 --name websphere --hostname websphere localhost/websphere:1.1.0010
+
+# podman run -d --rm -p 9043:9043 -p 9060:9060 -p 9080:9080 -p 9443:9443 --name websphere --hostname websphere localhost/websphere:1.1.0010
 
 
 
