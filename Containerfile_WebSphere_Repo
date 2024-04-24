@@ -1,11 +1,7 @@
 FROM registry.access.redhat.com/ubi9/ubi
-RUN mkdir /tmp/websphere \
-&& mkdir /tmp/websphere/agent \
-&& mkdir /tmp/websphere/response
+RUN mkdir -p /tmp/websphere/agent \
+&& mkdir -p /tmp/websphere/response
 COPY agent.installer.linux.gtk.x86_64_1.9.2008.20240227_0018.zip /tmp/websphere/agent
-COPY install_response_file.xml /tmp/websphere/response
-COPY master_password.txt /root/
-COPY credential.store /root/
 COPY start.sh /root/
 
 RUN dnf install -y unzip \
@@ -19,13 +15,14 @@ RUN /opt/IBM/InstallationManager/eclipse/tools/imcl -acceptLicense \
 
 CMD ["/usr/bin/sh", "/root/start.sh"]
 
-# /opt/IBM/InstallationManager/eclipse/tools/imcl listAvailablePackages -repositories https://repos.nfs.info/wasrepo/ -preferences com.ibm.cic.common.core.preferences.ssl.nonsecureMode=true
 # /opt/IBM/PackagingUtility/PUCL copy com.ibm.cic.agent -repositories https://www.ibm.com/software/repositorymanager/com.ibm.cic.agent -target /var/local -secureStorageFile /root/credential.store -masterPasswordFile /root/master_password.txt -showProgress -acceptLicense
 
-# /opt/IBM/InstallationManager/eclipse/tools/imcl listInstalledPackages
 
 # /opt/IBM/PackagingUtility/PUCL copy com.ibm.java.jdk.v8 -repositories https://www.ibm.com/software/repositorymanager/com.ibm.java.jdk.v8 -target /var/local -secureStorageFile /root/credential.store -masterPasswordFile /root/master_password.txt -showProgress -acceptLicense
 # /opt/IBM/PackagingUtility/PUCL copy com.ibm.websphere.IHS.v90 -repositories https://www.ibm.com/software/repositorymanager/com.ibm.websphere.IHS.v90 -target /var/local -secureStorageFile /root/credential.store -masterPasswordFile /root/master_password.txt -showProgress -acceptLicense
 # /opt/IBM/PackagingUtility/PUCL copy com.ibm.websphere.PLG.v90 -repositories https://www.ibm.com/software/repositorymanager/com.ibm.websphere.PLG.v90 -target /var/local -secureStorageFile /root/credential.store -masterPasswordFile /root/master_password.txt -showProgress -acceptLicense
 # /opt/IBM/PackagingUtility/PUCL copy com.ibm.websphere.BASE.v90 -repositories https://www.ibm.com/software/repositorymanager/com.ibm.websphere.BASE.v90 -target /var/local -secureStorageFile /root/credential.store -masterPasswordFile /root/master_password.txt -showProgress -acceptLicense
 # /opt/IBM/PackagingUtility/PUCL copy com.ibm.cic.packagingUtility -repositories https://www.ibm.com/software/repositorymanager/com.ibm.cic.packagingUtility -target /var/local -secureStorageFile /root/credential.store -masterPasswordFile /root/master_password.txt -showProgress -acceptLicense
+
+# /opt/IBM/InstallationManager/eclipse/tools/imcl listInstalledPackages
+# /opt/IBM/InstallationManager/eclipse/tools/imcl listAvailablePackages -repositories https://repos.nfs.info/wasrepo/ -preferences com.ibm.cic.common.core.preferences.ssl.nonsecureMode=true

@@ -1,6 +1,6 @@
 FROM base_icml:1.1.0002
 
-COPY install_WebSphere.xml response.websphere.NotManaged /tmp/websphere/response
+COPY install_WebSphere.xml response.websphere.NotManaged /tmp/websphere/response/
 COPY start_was.sh /root/start.sh
 
 RUN /opt/IBM/InstallationManager/eclipse/tools/imcl -acceptLicense \
@@ -16,7 +16,7 @@ RUN /opt/IBM/InstallationManager/eclipse/tools/imcl -acceptLicense \
 CMD ["/usr/bin/sh", "/root/start.sh"]
 
 
-# podman build -f Containerfile_WebSphere -t websphere:1.1.0011 .
+# podman build -f Containerfile_WebSphere -t websphere:1.1.0012 .
 
 
 # sudo mkdir -p /srv/was/ears && sudo mkdir -p /srv/was/apl && sudo mkdir -p /srv/was/profiles && sudo mkdir -p /srv/was/properties && sudo chown -R alex:alex /srv/was
@@ -24,11 +24,23 @@ CMD ["/usr/bin/sh", "/root/start.sh"]
 # podman volume create -o device=/srv/was/apl -o=o=bind was_apl_vol
 # podman volume create -o device=/srv/was/profiles -o=o=bind was_profiles_vol
 # podman volume create -o device=/srv/was/properties -o=o=bind was_properties_vol
-#/opt/IBM/WebSphere/AppServer/properties
-#/opt/IBM/WebSphere/AppServer/profiles
+# podman volume rm was_ears_vol was_apl_vol was_profiles_vol was_properties_vol
+
+# sudo mkdir -p /srv/ihs/Plugins/etc && sudo mkdir -p /srv/ihs/Plugins/logs && sudo mkdir -p /srv/ihs/Plugins/config && sudo chown -R alex:alex /srv/ihs
+# podman volume create -o device=/srv/ihs/Plugins/etc -o=o=bind plg_etc_vol
+# podman volume create -o device=/srv/ihs/Plugins/logs -o=o=bind plg_logs_vol
+# podman volume create -o device=/srv/ihs/Plugins/config -o=o=bind plg_config_vol
 
 
-# podman run -d --rm -v was_ears_vol:/mnt/ears:Z -v was_apl_vol:/mnt/apl:Z -v was_profiles_vol:/opt/IBM/WebSphere/AppServer/properties:Z -v was_properties_vol:/opt/IBM/WebSphere/AppServer/profiles:Z -p 9043:9043 -p 9060:9060 -p 9080:9080 -p 9443:9443 --name websphere --hostname websphere localhost/websphere:1.1.0010
+# podman run -d --rm \
+# -v plg_config_vol:/opt/IBM/WebSphere/Plugins/config:Z \
+# -v plg_logs_vol:/opt/IBM/WebSphere/Plugins/logs:Z \
+# -v plg_etc_vol:/opt/IBM/WebSphere/Plugins/etc:Z \
+# -v was_ears_vol:/mnt/ears:Z -v was_apl_vol:/mnt/apl:Z \
+# -v was_profiles_vol:/opt/IBM/WebSphere/AppServer/profiles:Z \
+# -v was_properties_vol:/opt/IBM/WebSphere/AppServer/properties:Z \
+# -p 9043:9043 -p 9060:9060 -p 9080:9080 -p 9443:9443 \
+# --name websphere --hostname websphere localhost/websphere:1.1.0012
 
 # podman run -d --rm -p 9043:9043 -p 9060:9060 -p 9080:9080 -p 9443:9443 --name websphere --hostname websphere localhost/websphere:1.1.0010
 

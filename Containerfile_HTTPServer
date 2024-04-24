@@ -28,7 +28,15 @@ CMD ["/usr/bin/sh", "/root/start.sh"]
 # podman volume create -o device=/srv/ihs/conf -o=o=bind ihs_conf_vol
 
 
-# podman run -d --rm -v ihs_logs_vol:/opt/IBM/HTTPServer/logs:Z -v ihs_certs_vol:/opt/IBM/HTTPServer/certs:Z -v ihs_conf_vol:/opt/IBM/HTTPServer/conf:Z --name httpserver --hostname httpserver --net=host httpserver:1.1.0007
+# podman run -d --rm \
+# -v plg_config_vol:/opt/IBM/WebSphere/Plugins/config:Z \
+# -v plg_logs_vol:/opt/IBM/WebSphere/Plugins/logs:Z \
+# -v plg_etc_vol:/opt/IBM/WebSphere/Plugins/etc:Z \
+# -v ihs_logs_vol:/opt/IBM/HTTPServer/logs:Z \
+# -v ihs_certs_vol:/opt/IBM/HTTPServer/certs:Z \
+# -v ihs_conf_vol:/opt/IBM/HTTPServer/conf:Z \
+# --name httpserver --hostname httpserver \
+# --net=host httpserver:1.1.0007
 
 
 # podman run -d --rm -v wasrepo_vol:/var/local:Z --name httpserver savvyaxl.com.br:5000/httpserver:1.1.0001
