@@ -1,9 +1,6 @@
-FROM base_icml:1.1.0002
-
-EXPOSE 80 443
+FROM base_icml:1.1.0003
 
 COPY install_HTTPServer.xml /tmp/websphere/response
-
 COPY start_ihs.sh /root/start.sh
 
 RUN /opt/IBM/InstallationManager/eclipse/tools/imcl -acceptLicense \
@@ -15,29 +12,83 @@ RUN groupadd -g 18001 ihsgrp \
 && useradd -u 18001 -g ihsgrp ihsusr
 
 COPY httpd.conf /opt/IBM/HTTPServer/conf
+EXPOSE 80 443
 
 CMD ["/usr/bin/sh", "/root/start.sh"]
 
 
-# podman build -f Containerfile_HTTPServer -t httpserver:1.1.0007 .
+# podman build -f Containerfile_HTTPServer -t httpserver:1.1.0008 .
 
 
-# sudo mkdir -p /srv/ihs/logs && mkdir -p /srv/ihs/certs && mkdir -p /srv/ihs/conf && sudo chown -R alex:alex /srv/ihs
+# # sudo mkdir -p /srv/ihs/logs && sudo mkdir -p /srv/ihs/certs && sudo mkdir -p /srv/ihs/conf && sudo chown -R alex:alex /srv/ihs
+# sudo mkdir -p /srv/ihs/logs && sudo mkdir -p /srv/ihs/certs && sudo mkdir -p /srv/ihs/conf && sudo chown -R azureuser:azureuser /srv/ihs
 # podman volume create -o device=/srv/ihs/logs -o=o=bind ihs_logs_vol
 # podman volume create -o device=/srv/ihs/certs -o=o=bind ihs_certs_vol
 # podman volume create -o device=/srv/ihs/conf -o=o=bind ihs_conf_vol
 
+# # # sudo mkdir -p /srv/ihs/Plugins/logs && sudo mkdir -p /srv/ihs/Plugins/config && sudo chown -R alex:alex /srv/ihs
+# sudo mkdir -p /srv/ihs/Plugins/logs && sudo mkdir -p /srv/ihs/Plugins/config && sudo chown -R azureuser:azureuser /srv/ihs
+# podman volume create -o device=/srv/ihs/Plugins/logs -o=o=bind plg_logs_vol
+# podman volume create -o device=/srv/ihs/Plugins/config -o=o=bind plg_config_vol
+
+# # podman volume rm ihs_logs_vol ihs_certs_vol ihs_conf_vol plg_logs_vol plg_config_vol
+
+
+# # As Root
+# # mkdir -p /srv/ihs/logs && mkdir -p /srv/ihs/certs && mkdir -p /srv/ihs/conf && mkdir -p /srv/ihs/Plugins/logs && mkdir -p /srv/ihs/Plugins/config
+# docker volume create -o type=none -o device=/srv/ihs/logs -o=o=bind ihs_logs_vol
+# docker volume create -o type=none -o device=/srv/ihs/certs -o=o=bind ihs_certs_vol
+# docker volume create -o type=none -o device=/srv/ihs/conf -o=o=bind ihs_conf_vol
+# docker volume create -o type=none -o device=/srv/ihs/Plugins/logs -o=o=bind plg_logs_vol
+# docker volume create -o type=none -o device=/srv/ihs/Plugins/config -o=o=bind plg_config_vol
+# docker volume rm ihs_logs_vol ihs_certs_vol ihs_conf_vol plg_logs_vol plg_config_vol
+
 
 # podman run -d --rm \
-# -v plg_config_vol:/opt/IBM/WebSphere/Plugins/config:Z \
-# -v plg_logs_vol:/opt/IBM/WebSphere/Plugins/logs:Z \
-# -v plg_etc_vol:/opt/IBM/WebSphere/Plugins/etc:Z \
-# -v ihs_logs_vol:/opt/IBM/HTTPServer/logs:Z \
-# -v ihs_certs_vol:/opt/IBM/HTTPServer/certs:Z \
-# -v ihs_conf_vol:/opt/IBM/HTTPServer/conf:Z \
+# -v plg_config_vol:/opt/IBM/WebSphere/Plugins/config:z \
+# -v plg_logs_vol:/opt/IBM/WebSphere/Plugins/logs:z \
+# -v ihs_logs_vol:/opt/IBM/HTTPServer/logs:z \
+# -v ihs_certs_vol:/opt/IBM/HTTPServer/certs:z \
+# -v ihs_conf_vol:/opt/IBM/HTTPServer/conf:z \
+# --add-host websphere:192.168.0.199 \
 # --name httpserver --hostname httpserver \
-# --net=host httpserver:1.1.0007
+# --net=host httpserver:1.1.0008
+
+# docker run -d --rm \
+# -v plg_config_vol:/opt/IBM/WebSphere/Plugins/config \
+# -v plg_logs_vol:/opt/IBM/WebSphere/Plugins/logs \
+# -v ihs_logs_vol:/opt/IBM/HTTPServer/logs \
+# -v ihs_certs_vol:/opt/IBM/HTTPServer/certs \
+# --add-host websphere:10.0.0.4 \
+# --name httpserver --hostname httpserver \
+# --net=host savvyaxl.com.br:5000/httpserver:1.1.0008
 
 
-# podman run -d --rm -v wasrepo_vol:/var/local:Z --name httpserver savvyaxl.com.br:5000/httpserver:1.1.0001
+# docker run -d --rm \
+# -v plg_config_vol2:/opt/IBM/WebSphere/Plugins/config \
+# -v plg_logs_vol2:/opt/IBM/WebSphere/Plugins/logs \
+# -v ihs_logs_vol2:/opt/IBM/HTTPServer/logs \
+# -v ihs_certs_vol2:/opt/IBM/HTTPServer/certs \
+# --add-host websphere:10.0.0.4 \
+# --name httpserver --hostname httpserver \
+# --net=host savvyaxl.com.br:5000/httpserver:1.1.0008
+
+
+# #-v ihs_conf_vol:/opt/IBM/HTTPServer/conf \
+
+# # podman push httpserver:1.1.0008 savvyaxl.com.br:5000/httpserver:1.1.0008
+# # podman pull savvyaxl.com.br:5000/httpserver:1.1.0008
+# # docker pull savvyaxl.com.br:5000/httpserver:1.1.0008
+
+
+# # podman run -d --rm -v wasrepo_vol:/var/local:Z --name httpserver savvyaxl.com.br:5000/httpserver:1.1.0007
+
+
+# # "Binds": [
+# #   "ihs_conf_vol:/opt/IBM/HTTPServer/conf:Z,rw,rprivate,nosuid,nodev,rbind",
+# #   "plg_config_vol:/opt/IBM/WebSphere/Plugins/config:Z,rw,rprivate,nosuid,nodev,rbind",
+# #   "plg_logs_vol:/opt/IBM/WebSphere/Plugins/logs:Z,rw,rprivate,nosuid,nodev,rbind",
+# #   "plg_etc_vol:/opt/IBM/WebSphere/Plugins/etc:Z,rw,rprivate,nosuid,nodev,rbind",
+# #   "ihs_logs_vol:/opt/IBM/HTTPServer/logs:Z,rw,rprivate,nosuid,nodev,rbind",
+# #   "ihs_certs_vol:/opt/IBM/HTTPServer/certs:Z,rw,rprivate,nosuid,nodev,rbind"
 

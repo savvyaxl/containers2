@@ -3,8 +3,9 @@ start(){
     /opt/IBM/WebSphere/AppServer/bin/startServer.sh server1
 }
 end(){
-    trap - SIGINT SIGTERM SIGSTOP# clear the trap
+    trap - SIGINT SIGTERM SIGSTOP
     /opt/IBM/WebSphere/AppServer/bin/stopServer.sh server1
+    exit
 }
 trap end SIGINT SIGTERM SIGSTOP
 start
