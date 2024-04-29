@@ -22,12 +22,13 @@ CMD ["/usr/bin/sh", "/root/start.sh"]
 
 # # sudo mkdir -p /srv/ihs/logs && sudo mkdir -p /srv/ihs/certs && sudo mkdir -p /srv/ihs/conf && sudo chown -R alex:alex /srv/ihs
 # sudo mkdir -p /srv/ihs/logs && sudo mkdir -p /srv/ihs/certs && sudo mkdir -p /srv/ihs/conf && sudo chown -R azureuser:azureuser /srv/ihs
+# # # sudo mkdir -p /srv/ihs/Plugins/logs && sudo mkdir -p /srv/ihs/Plugins/config && sudo chown -R alex:alex /srv/ihs
+
 # podman volume create -o device=/srv/ihs/logs -o=o=bind ihs_logs_vol
 # podman volume create -o device=/srv/ihs/certs -o=o=bind ihs_certs_vol
 # podman volume create -o device=/srv/ihs/conf -o=o=bind ihs_conf_vol
 
-# # # sudo mkdir -p /srv/ihs/Plugins/logs && sudo mkdir -p /srv/ihs/Plugins/config && sudo chown -R alex:alex /srv/ihs
-# sudo mkdir -p /srv/ihs/Plugins/logs && sudo mkdir -p /srv/ihs/Plugins/config && sudo chown -R azureuser:azureuser /srv/ihs
+# # sudo mkdir -p /srv/ihs/Plugins/logs && sudo mkdir -p /srv/ihs/Plugins/config && sudo chown -R azureuser:azureuser /srv/ihs
 # podman volume create -o device=/srv/ihs/Plugins/logs -o=o=bind plg_logs_vol
 # podman volume create -o device=/srv/ihs/Plugins/config -o=o=bind plg_config_vol
 
@@ -36,12 +37,12 @@ CMD ["/usr/bin/sh", "/root/start.sh"]
 
 # # As Root
 # # mkdir -p /srv/ihs/logs && mkdir -p /srv/ihs/certs && mkdir -p /srv/ihs/conf && mkdir -p /srv/ihs/Plugins/logs && mkdir -p /srv/ihs/Plugins/config
-# docker volume create -o type=none -o device=/srv/ihs/logs -o=o=bind ihs_logs_vol
-# docker volume create -o type=none -o device=/srv/ihs/certs -o=o=bind ihs_certs_vol
-# docker volume create -o type=none -o device=/srv/ihs/conf -o=o=bind ihs_conf_vol
-# docker volume create -o type=none -o device=/srv/ihs/Plugins/logs -o=o=bind plg_logs_vol
-# docker volume create -o type=none -o device=/srv/ihs/Plugins/config -o=o=bind plg_config_vol
-# docker volume rm ihs_logs_vol ihs_certs_vol ihs_conf_vol plg_logs_vol plg_config_vol
+# sudo docker volume create -o type=none -o device=/srv/ihs/logs -o=o=bind ihs_logs_vol
+# sudo docker volume create -o type=none -o device=/srv/ihs/certs -o=o=bind ihs_certs_vol
+# sudo docker volume create -o type=none -o device=/srv/ihs/conf -o=o=bind ihs_conf_vol
+# sudo docker volume create -o type=none -o device=/srv/ihs/Plugins/logs -o=o=bind plg_logs_vol
+# sudo docker volume create -o type=none -o device=/srv/ihs/Plugins/config -o=o=bind plg_config_vol
+# # docker volume rm ihs_logs_vol ihs_certs_vol ihs_conf_vol plg_logs_vol plg_config_vol
 
 
 # podman run -d --rm \
@@ -50,9 +51,20 @@ CMD ["/usr/bin/sh", "/root/start.sh"]
 # -v ihs_logs_vol:/opt/IBM/HTTPServer/logs:z \
 # -v ihs_certs_vol:/opt/IBM/HTTPServer/certs:z \
 # -v ihs_conf_vol:/opt/IBM/HTTPServer/conf:z \
-# --add-host websphere:192.168.0.199 \
+# --add-host websphere:10.0.0.5 \
 # --name httpserver --hostname httpserver \
 # --net=host httpserver:1.1.0008
+
+# podman run -d --rm \
+# -v /srv/ihs/Plugins/config:/opt/IBM/WebSphere/Plugins/config:z \
+# -v /srv/ihs/Plugins/logs:/opt/IBM/WebSphere/Plugins/logs:z \
+# -v /srv/ihs/logs:/opt/IBM/HTTPServer/logs:z \
+# -v /srv/ihs/certs:/opt/IBM/HTTPServer/certs:z \
+# -v /srv/ihs/conf:/opt/IBM/HTTPServer/conf:z \
+# --add-host websphere:10.0.0.5 \
+# --name httpserver --hostname httpserver \
+# --net=host httpserver:1.1.0008
+
 
 # docker run -d --rm \
 # -v plg_config_vol:/opt/IBM/WebSphere/Plugins/config \

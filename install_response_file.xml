@@ -4,11 +4,12 @@
 <variable name='sharedLocation' value='/opt/IBM/Shared'/>
 <variable name='wasVersion' value='9.0.5016.20230609_0954'/>
 <variable name='javaVersion' value='8.0.8021.20240318_0922'/>
+<variable name='home' value='opt'/>
 </variables>
 <server>
-<repository location='https://repos.nfs.info/wasrepo'/>
+<repository location='https://repos.savvyaxl.com.br:6235/wasrepo/'/>
 </server>
-<profile id='IBM HTTP Server V9.0' installLocation='/opt/IBM/HTTPServer'>
+<profile id='IBM HTTP Server V9.0' installLocation='/${home}/IBM/HTTPServer'>
 <data key='cic.selector.arch' value='x86_64'/>
 <data key='user.wasjava' value='java8'/>
 <data key='user.ihs.http.server.service.name' value='none'/>
@@ -23,7 +24,7 @@
 <!-- IBM SDK, Java Technology Edition -->
 <offering profile='IBM HTTP Server V9.0' id='com.ibm.java.jdk.v8' version='${javaVersion}' features='com.ibm.sdk.8'/>
 </install>
-<profile id='IBM WebSphere Application Server V9.0' installLocation='/opt/IBM/WebSphere/AppServer'>
+<profile id='IBM WebSphere Application Server V9.0' installLocation='/${home}/IBM/WebSphere/AppServer'>
 <data key='cic.selector.arch' value='x86_64'/>
 </profile>
 <install>
@@ -32,7 +33,7 @@
 <!-- IBM SDK, Java Technology Edition -->
 <offering profile='IBM WebSphere Application Server V9.0' id='com.ibm.java.jdk.v8' version='${javaVersion}' features='com.ibm.sdk.8'/>
 </install>
-<profile id='Web Server Plug-ins for IBM WebSphere Application Server V9.0' installLocation='/opt/IBM/WebSphere/Plugins'>
+<profile id='Web Server Plug-ins for IBM WebSphere Application Server V9.0' installLocation='/${home}/IBM/WebSphere/Plugins'>
 <data key='cic.selector.arch' value='x86_64'/>
 </profile>
 <install>

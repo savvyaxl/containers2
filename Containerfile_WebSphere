@@ -51,13 +51,36 @@ CMD ["/usr/bin/sh", "/root/start.sh"]
 # -v ihs_logs_vol:/opt/IBM/HTTPServer/logs:z \
 # -v plg_config_vol:/opt/IBM/WebSphere/Plugins/config:z \
 # -v plg_logs_vol:/opt/IBM/WebSphere/Plugins/logs:z \
-# -v was_ears_vol:/mnt/ears:Z -v was_apl_vol:/mnt/apl:Z \
+# -v was_ears_vol:/mnt/ears:Z -v /srv/was/apl:/mnt/apl:Z \
 # -v was_profiles_vol:/opt/IBM/WebSphere/AppServer/profiles:Z \
 # -v was_properties_vol:/opt/IBM/WebSphere/AppServer/properties:Z \
 # -p 9043:9043 -p 9060:9060 -p 9080:9080 -p 9443:9443 \
 # --name websphere --hostname websphere savvyaxl.com.br:5000/websphere:1.1.0013
 
-# docker run -d --rm \
+# podman run -d --rm \
+# -v /srv/ihs/Plugins/config:/opt/IBM/WebSphere/Plugins/config:z \
+# -v /srv/ihs/Plugins/logs:/opt/IBM/WebSphere/Plugins/logs:z \
+# -v /srv/ihs/logs:/opt/IBM/HTTPServer/logs:z \
+# -v /srv/ihs/conf:/opt/IBM/HTTPServer/conf:z \
+# -v /srv/was/ears:/mnt/ears:Z -v /srv/was/apl:/mnt/apl:Z \
+# -v was_profiles_vol:/opt/IBM/WebSphere/AppServer/profiles:Z \
+# -v /srv/was/properties:/opt/IBM/WebSphere/AppServer/properties:Z \
+# -p 9043:9043 -p 9060:9060 -p 9080:9080 -p 9443:9443 \
+# --name websphere --hostname websphere savvyaxl.com.br:5000/websphere:1.1.0013
+
+# podman run -d --rm \
+# -v /srv/ihs/Plugins/config:/opt/IBM/WebSphere/Plugins/config:z \
+# -v /srv/ihs/Plugins/logs:/opt/IBM/WebSphere/Plugins/logs:z \
+# -v /srv/ihs/logs:/opt/IBM/HTTPServer/logs:z \
+# -v /srv/ihs/conf:/opt/IBM/HTTPServer/conf:z \
+# -v /srv/was/ears:/mnt/ears:Z -v /srv/was/apl:/mnt/apl:Z \
+# -v /srv/was/profiles:/opt/IBM/WebSphere/AppServer/profiles:Z \
+# -v /srv/was/properties:/opt/IBM/WebSphere/AppServer/properties:Z \
+# -p 9043:9043 -p 9060:9060 -p 9080:9080 -p 9443:9443 \
+# --name websphere --hostname websphere savvyaxl.com.br:5000/websphere:1.1.0013
+
+
+# sudo docker run -d --rm \
 # -v ihs_conf_vol2:/opt/IBM/HTTPServer/conf:z \
 # -v ihs_logs_vol2:/opt/IBM/HTTPServer/logs:z \
 # -v plg_config_vol2:/opt/IBM/WebSphere/Plugins/config:z \
