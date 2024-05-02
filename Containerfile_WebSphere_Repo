@@ -26,3 +26,7 @@ CMD ["/usr/bin/sh", "/root/start.sh"]
 
 # /opt/IBM/InstallationManager/eclipse/tools/imcl listInstalledPackages
 # /opt/IBM/InstallationManager/eclipse/tools/imcl listAvailablePackages -repositories https://repos.nfs.info/wasrepo/ -preferences com.ibm.cic.common.core.preferences.ssl.nonsecureMode=true
+
+
+#AdminTask.createWebServerByHostName('[-webserverName webserver1 -templateName IHS -webPort 80 -serviceName -webInstallRoot /opt/IBM/HTTPServer -webProtocol HTTP -configurationFile -errorLogfile -accessLogfile -pluginInstallRoot /opt/IBM/WebSphere/Plugins -webAppMapping ALL -hostName myvm -platform linux -adminPort 8008 -adminUserID bob -adminPasswd ******** -adminProtocol HTTP]')
+#AdminControl.invoke('WebSphere:name=PluginCfgGenerator,process=server1,platform=common,node=websphere,version=9.0.5.16,type=PluginCfgGenerator,mbeanIdentifier=PluginCfgGenerator,cell=wascell,spec=1.0', 'propagateKeyring', '[/opt/IBM/WebSphere/AppServer/profiles/wasnode/config wascell websphere webserver1]')
